@@ -6,5 +6,8 @@
   "author": "Michael Christie",
   "description": "Discord manager for unity using discords SDK",
   "dependencies": {},
-  "repository" : {}
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Michael-Christie/com.michaechristie.discordmanager.git"
+  }
 }
