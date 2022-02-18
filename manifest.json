@@ -1,0 +1,10 @@
+{
+  "name": "com.MichaelChristie.Discord",
+  "displayName": "Discord Manager",
+  "version": "1.0.0",
+  "unity": "2019.1",
+  "author": "Michael Christie",
+  "description": "Discord manager for unity using discords SDK",
+  "dependencies": {},
+  "repository" : {}
+}
