@@ -15,19 +15,6 @@ namespace MC.DiscordManager
 
         private static Discord.Discord discordInstance;
 
-        [SerializeField, Tooltip("The app ID from Discord Dev page")] private long discordAppId;
-
-        [SerializeField, Tooltip("Steams App ID")] private uint steamAppID;
-
-        //These image keys are found by uploading an image to discord art asset section in the developers section
-        [SerializeField] private string largeImageKey;
-        [SerializeField] private string largeImageText;
-        [SerializeField] private string smallImageKey;
-        [SerializeField] private string smallImageText;
-        [SerializeField] private string serverInviteCode;
-
-        [SerializeField] private bool hasSteamID;
-
         [SerializeField] private RawImage imgDiscordUser;
 
         private User userData;
@@ -55,11 +42,11 @@ namespace MC.DiscordManager
         {
             startTime = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds();
 
-            discordInstance = new Discord.Discord(discordAppId, (UInt64)CreateFlags.Default);
+            discordInstance = new Discord.Discord(DiscordManagerData.Settings.discordAppId, (UInt64)CreateFlags.Default);
 
-            if (hasSteamID)
+            if (DiscordManagerData.Settings.hasSteamID)
             {
-                discordInstance.GetActivityManager().RegisterSteam(steamAppID);
+                discordInstance.GetActivityManager().RegisterSteam(DiscordManagerData.Settings.steamAppID);
             }
 
             discordInstance.GetUserManager().OnCurrentUserUpdate += OnUserUpdate;
@@ -124,10 +111,10 @@ namespace MC.DiscordManager
                 },
                 Assets = new ActivityAssets
                 {
-                    LargeImage = largeImageKey,
-                    LargeText = largeImageText,
-                    SmallImage = smallImageKey,
-                    SmallText = smallImageText
+                    LargeImage = DiscordManagerData.Settings.largeImageKey,
+                    LargeText = DiscordManagerData.Settings.largeImageText,
+                    SmallImage = DiscordManagerData.Settings.smallImageKey,
+                    SmallText = DiscordManagerData.Settings.smallImageText
                 },
             };
         }
@@ -150,10 +137,10 @@ namespace MC.DiscordManager
                 },
                 Assets = new ActivityAssets
                 {
-                    LargeImage = largeImageKey,
-                    LargeText = largeImageText,
-                    SmallImage = smallImageKey,
-                    SmallText = smallImageText
+                    LargeImage = DiscordManagerData.Settings.largeImageKey,
+                    LargeText = DiscordManagerData.Settings.largeImageText,
+                    SmallImage = DiscordManagerData.Settings.smallImageKey,
+                    SmallText = DiscordManagerData.Settings.smallImageText
                 },
             };
 
@@ -199,7 +186,7 @@ namespace MC.DiscordManager
         /// <param name="onComplete">Returns true if was able to successfuly join the server. False if there was an issue.</param>
         public void RequestInviteToDiscordServer(Action<bool> onComplete = null)
         {
-            discordInstance.GetOverlayManager().OpenGuildInvite(serverInviteCode,
+            discordInstance.GetOverlayManager().OpenGuildInvite(DiscordManagerData.Settings.serverInviteCode,
                 delegate (Result _result)
                 {
                     if (_result == Result.Ok)
