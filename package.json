@@ -1,10 +1,12 @@
 {
   "name": "com.michaelchristie.discordmanager",
   "displayName": "Discord Manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "unity": "2019.1",
   "author": "Michael Christie",
   "description": "Discord manager for unity using discords SDK",
+  "changelogUrl": "https://github.com/Michael-Christie/com.michaechristie.discordmanager/releases",
+  "documentationUrl": "https://github.com/Michael-Christie/com.michaechristie.discordmanager/blob/master/README.md",
   "dependencies": {},
   "repository": {
     "type": "git",
