@@ -50,6 +50,11 @@ namespace MC.DiscordManager
             }
 
             discordInstance.GetUserManager().OnCurrentUserUpdate += OnUserUpdate;
+
+            if (DiscordManagerData.Settings.useDebugLogging)
+            {
+                discordInstance.SetLogHook(DiscordManagerData.Settings.minLoggingLevel, DiscordInternalLog);
+            }
         }
 
         private void Update()
@@ -61,32 +66,42 @@ namespace MC.DiscordManager
         //Removes the activity instance on the discord user.
         private void OnDisable()
         {
-            Debug.Log("Deleting Discord Obj");
+            if (DiscordManagerData.Settings.useDebugLogging)
+            {
+                Debug.Log("Deleting Discord Obj");
+            }
             discordInstance.Dispose();
         }
 #else
     private void OnApplicationQuit()
     {
-        Debug.Log("Deleting Discord Obj");
+        if (DiscordManagerData.Settings.useDebugLogging)
+        {
+            Debug.Log("Deleting Discord Obj");
+        }
         discordInstance.Dispose();
     }
 #endif
 
-#region Activity's
+        #region Activity's
         /// <summary>
         /// Clear the users activity
         /// </summary>
         public void ClearActivity()
         {
-            discordInstance.GetActivityManager().ClearActivity(delegate (Result _result)
+            discordInstance.GetActivityManager().ClearActivity(
+                delegate (Result _result)
                 {
-                    if (_result == Result.Ok)
+                    if (DiscordManagerData.Settings.useDebugLogging)
                     {
-                        Debug.Log("Succsessfuly cleared Activity");
-                    }
-                    else
-                    {
-                        Debug.Log("Couldn't clear Activity");
+                        if (_result == Result.Ok)
+                        {
+                            Debug.Log("Succsessfuly cleared Activity");
+                        }
+                        else
+                        {
+                            Debug.Log("Couldn't clear Activity");
+                        }
                     }
                 });
         }
@@ -165,21 +180,25 @@ namespace MC.DiscordManager
         {
             ActivityManager _activityManager = discordInstance.GetActivityManager();
 
-            _activityManager.UpdateActivity(_activity, delegate (Result _result)
-            {
-                if (_result == Result.Ok)
+            _activityManager.UpdateActivity(_activity,
+                delegate (Result _result)
                 {
-                    Debug.Log("Set Up");
-                }
-                else
-                {
-                    Debug.Log("Error");
-                }
-            });
+                    if (DiscordManagerData.Settings.useDebugLogging)
+                    {
+                        if (_result == Result.Ok)
+                        {
+                            Debug.Log("Set Up");
+                        }
+                        else
+                        {
+                            Debug.Log("Error");
+                        }
+                    }
+                });
         }
-#endregion
+        #endregion
 
-#region Overlay Manager
+        #region Overlay Manager
         /// <summary>
         /// Join the discord server
         /// </summary>
@@ -189,17 +208,20 @@ namespace MC.DiscordManager
             discordInstance.GetOverlayManager().OpenGuildInvite(DiscordManagerData.Settings.serverInviteCode,
                 delegate (Result _result)
                 {
-                    if (_result == Result.Ok)
+                    if (DiscordManagerData.Settings.useDebugLogging)
                     {
-                        Debug.Log("All Good");
+                        if (_result == Result.Ok)
+                        {
+                            Debug.Log("All Good");
+                        }
                     }
 
                     onComplete?.Invoke(_result == Result.Ok);
                 });
         }
-#endregion
+        #endregion
 
-#region UserData
+        #region UserData
         private void OnUserUpdate()
         {
             userData = discordInstance.GetUserManager().GetCurrentUser();
@@ -258,17 +280,36 @@ namespace MC.DiscordManager
                     }
                     else
                     {
-                        Debug.Log(_result);
+                        if (DiscordManagerData.Settings.useDebugLogging)
+                        {
+                            Debug.LogError(_result);
+                        }
                     }
                 });
         }
-#endregion
+        #endregion
 
-#region Utility
+        #region Utility
         public static long TimeToUnixSeconds(DateTime _dateTime)
         {
             return new DateTimeOffset(_dateTime).ToUnixTimeSeconds();
         }
-#endregion
+
+        private void DiscordInternalLog(LogLevel _level, string _message)
+        {
+            if (_level == LogLevel.Debug || _level == LogLevel.Info)
+            {
+                Debug.Log($"Discord - {_message}");
+            }
+            else if (_level == LogLevel.Warn)
+            {
+                Debug.LogWarning($"Discord - {_message}");
+            }
+            else if (_level == LogLevel.Error)
+            {
+                Debug.LogError($"Discord - {_message}");
+            }
+        }
+        #endregion
     }
 }

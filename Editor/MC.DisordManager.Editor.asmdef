@@ -1,0 +1,18 @@
+{
+    "name": "MC.DiscordManager.Editor",
+    "rootNamespace": "MC.DiscordManager",
+    "references": [
+        "GUID:151ad29e5ca30294e9ac4907c4ada74c"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

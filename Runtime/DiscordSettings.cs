@@ -18,5 +18,8 @@ namespace MC.DiscordManager
         public string serverInviteCode;
 
         public bool hasSteamID;
+        public bool useDebugLogging;
+
+        public Discord.LogLevel minLoggingLevel = Discord.LogLevel.Debug;
     }
 }

@@ -44,6 +44,7 @@ namespace MC.DiscordManager
             }
         }
 
+
 #if UNITY_EDITOR
         [MenuItem("DiscordManager/CreateAssetMenu", priority = 0)]
         public static void CreateSettingsAsset()
