@@ -196,6 +196,8 @@ namespace MC.DiscordManager
                     }
                 });
         }
+
+        ///TODO add in joining / spectating / inviting players here....
         #endregion
 
         #region Overlay Manager
@@ -218,6 +220,49 @@ namespace MC.DiscordManager
 
                     onComplete?.Invoke(_result == Result.Ok);
                 });
+        }
+
+        public void InviteToActivity(Action<Result> onInvite)
+        {
+            discordInstance.GetOverlayManager().OpenActivityInvite(ActivityActionType.Spectate,
+                delegate (Result _result)
+                {
+                    if(DiscordManagerData.Settings.useDebugLogging)
+                    {
+                        Debug.Log($"Invite returned result: {_result}");
+                    }
+
+                    onInvite?.Invoke(_result);
+                });
+        }
+
+        public void OpenVoiceSettings()
+        {
+            discordInstance.GetOverlayManager().OpenVoiceSettings(
+                delegate (Result _result)
+                {
+                    if (DiscordManagerData.Settings.useDebugLogging)
+                    {
+                        Debug.Log($"Open Voice returned result: {_result}");
+                    }
+                });
+        }
+
+        public void SetOverlayLockState(bool _isLocked)
+        {
+            discordInstance.GetOverlayManager().SetLocked(_isLocked,
+                delegate (Result _result)
+                {
+                    if (DiscordManagerData.Settings.useDebugLogging)
+                    {
+                        Debug.Log($"Setting overlay returned result: {_result}");
+                    }
+                });
+        }
+
+        public bool GetOverlayLockedState()
+        {
+            return discordInstance.GetOverlayManager().IsLocked();
         }
         #endregion
 
