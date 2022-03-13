@@ -11,7 +11,6 @@ namespace MC.DiscordManager
     {
         private static DiscordSettings _discordSettings;
 
-        private const string path = "DiscordManager/DiscordSettings";
 
         public static DiscordSettings Settings
         {
@@ -30,15 +29,15 @@ namespace MC.DiscordManager
                         Directory.CreateDirectory($"{Application.dataPath}/Resources/DiscordManager");
                     }
 
-                    if (!File.Exists($"{Application.dataPath}/Resources/DiscordManager/DiscordSettings.asset"))
+                    if (!File.Exists($"{Application.dataPath}/Resources/{GameUtilities.path}.asset"))
                     {
                         _discordSettings = ScriptableObject.CreateInstance<DiscordSettings>();
-                        AssetDatabase.CreateAsset(_discordSettings, $"Assets/Resources/DiscordManager/DiscordSettings.asset");
+                        AssetDatabase.CreateAsset(_discordSettings, $"Assets/Resources/{GameUtilities.path}.asset");
                     }
 
                     AssetDatabase.SaveAssets();
 #endif
-                    _discordSettings = Resources.Load<DiscordSettings>(path);
+                    _discordSettings = Resources.Load<DiscordSettings>(GameUtilities.path);
                 }
                 return _discordSettings;
             }
@@ -59,10 +58,10 @@ namespace MC.DiscordManager
                 Directory.CreateDirectory($"{Application.dataPath}/Resources/DiscordManager");
             }
 
-            if (!File.Exists($"{Application.dataPath}/Resources/DiscordManager/DiscordSettings.asset"))
+            if (!File.Exists($"{Application.dataPath}/Resources/{GameUtilities.path}.asset"))
             {
                 _discordSettings = ScriptableObject.CreateInstance<DiscordSettings>();
-                AssetDatabase.CreateAsset(_discordSettings, $"Assets/Resources/DiscordManager/DiscordSettings.asset");
+                AssetDatabase.CreateAsset(_discordSettings, $"Assets/Resources/{GameUtilities.path}.asset");
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
             }
