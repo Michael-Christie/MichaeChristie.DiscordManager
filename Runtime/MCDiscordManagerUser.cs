@@ -9,6 +9,7 @@ namespace MC.DiscordManager
     {
         #region UserData
         public delegate void GetUser(bool _sucess, ref User user);
+        public delegate void GetUsersTexture(bool _sucess, Texture2D _avatarTexture);
 
         public bool DoesUserHaveHouse
         {
@@ -129,7 +130,7 @@ namespace MC.DiscordManager
         /// </summary>
         /// <param name="_userID">The users ID you want to get.</param>
         /// <param name="_onComplete">The callback for when the user is found.</param>
-        public void GetOtherUser(long _userID, GetUser _onComplete)
+        public void GetAnotherUser(long _userID, GetUser _onComplete)
         {
             discordInstance.GetUserManager().GetUser(_userID,
                 delegate (Result _result, ref User _user)
@@ -158,6 +159,20 @@ namespace MC.DiscordManager
                             Debug.LogError(_result);
                         }
                     }
+                });
+        }
+
+        public void GetAnotherUsersAvatar(User _user, GetUsersTexture _onComplete)
+        {
+            discordInstance.GetImageManager().Fetch(ImageHandle.User(_user.Id, 256),
+                delegate (Result _result, ImageHandle _handle)
+                {
+                    if (DiscordManagerData.Settings.useDebugLogging)
+                    {
+                        Debug.LogError(_result);
+                    }
+
+                    _onComplete?.Invoke(_result == Result.Ok, discordInstance.GetImageManager().GetTexture(_handle));
                 });
         }
         #endregion

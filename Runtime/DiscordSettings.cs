@@ -16,9 +16,11 @@ namespace MC.DiscordManager
         public string smallImageKey;
         public string smallImageText;
         public string serverInviteCode;
+        public string defaultWebhookURL;
 
         public bool hasSteamID;
         public bool useDebugLogging;
+        public bool useWebhooks;
 
         public Discord.LogLevel minLoggingLevel = Discord.LogLevel.Debug;
     }
