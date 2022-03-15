@@ -41,10 +41,25 @@ namespace MC.DiscordManager
 
             EditorGUILayout.Space();
 
-            EditorGUILayout.LabelField("I need to add the images text and keys here");
+            EditorGUILayout.LabelField("Activity Images", EditorStyles.boldLabel);
+            _settingTarget.largeImageKey = EditorGUILayout.TextField("Large Image Key", _settingTarget.largeImageKey);
+            _settingTarget.largeImageText = EditorGUILayout.TextField("Large Image Text", _settingTarget.largeImageText);
+            _settingTarget.smallImageKey = EditorGUILayout.TextField("Small Image Key", _settingTarget.smallImageKey);
+            _settingTarget.smallImageText = EditorGUILayout.TextField("Small Image Text", _settingTarget.smallImageText);
 
             EditorGUILayout.Space();
 
+            EditorGUILayout.LabelField("Webhooks", EditorStyles.boldLabel);
+            _settingTarget.useWebhooks = EditorGUILayout.Toggle("Use Webhooks?", _settingTarget.useWebhooks);
+
+            if (_settingTarget.useWebhooks)
+            {
+                _settingTarget.defaultWebhookURL = EditorGUILayout.TextField("Default Webhook URL", _settingTarget.defaultWebhookURL);
+            }
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("Steam Intergration", EditorStyles.boldLabel);
             _settingTarget.hasSteamID = EditorGUILayout.Toggle("Have Steam Page?", _settingTarget.hasSteamID);
 
             if (_settingTarget.hasSteamID)

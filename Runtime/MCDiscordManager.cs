@@ -100,11 +100,6 @@ namespace MC.DiscordManager
         #endregion
 
         #region Utility
-        public static long TimeToUnixSeconds(DateTime _dateTime)
-        {
-            return new DateTimeOffset(_dateTime).ToUnixTimeSeconds();
-        }
-
         private void DiscordInternalLog(LogLevel _level, string _message)
         {
             if (_level == LogLevel.Debug || _level == LogLevel.Info)
