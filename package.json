@@ -1,7 +1,7 @@
 {
   "name": "com.michaelchristie.discordmanager",
   "displayName": "Discord Manager",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "unity": "2019.1",
   "author": "Michael Christie",
   "description": "Discord manager for unity using discords SDK",
