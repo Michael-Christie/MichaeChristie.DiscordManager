@@ -150,7 +150,10 @@ namespace MC.DiscordManager
                     if (_result == Result.Ok)
                     {
                         usersAvatar = discordInstance.GetImageManager().GetTexture(_handle);
-                        imgDiscordUser.texture = usersAvatar;
+                        if (imgDiscordUser != null)
+                        {
+                            imgDiscordUser.texture = usersAvatar;
+                        }
                     }
                     else
                     {
