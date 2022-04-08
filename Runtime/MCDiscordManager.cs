@@ -25,6 +25,8 @@ namespace MC.DiscordManager
 
         public Action onUserUpdate;
 
+        public bool IsInitialized { get; private set; }
+
         //
         private void Awake()
         {
@@ -42,7 +44,56 @@ namespace MC.DiscordManager
         {
             startTime = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds();
 
-            discordInstance = new Discord.Discord(DiscordManagerData.Settings.discordAppId, (UInt64)CreateFlags.Default);
+            if (DiscordManagerData.Settings.initializeOnStart)
+            {
+                Create(null);
+            }
+        }
+
+        private void Update()
+        {
+            if (IsInitialized)
+            {
+                discordInstance.RunCallbacks();
+            }
+        }
+
+#if UNITY_EDITOR
+        //Removes the activity instance on the discord user.
+        private void OnDisable()
+        {
+            if (!IsInitialized)
+                return;
+
+            if (DiscordManagerData.Settings.useDebugLogging)
+            {
+                Debug.Log("Deleting Discord Obj");
+            }
+            discordInstance.Dispose();
+        }
+#else
+    private void OnApplicationQuit()
+    {
+        if (!IsInitialized)
+            return;
+
+        if (DiscordManagerData.Settings.useDebugLogging)
+        {
+            Debug.Log("Deleting Discord Obj");
+        }
+        discordInstance.Dispose();
+    }
+#endif
+
+        public void Create(Action<bool> _wasCreated)
+        {
+            discordInstance = new Discord.Discord(DiscordManagerData.Settings.discordAppId, (UInt64)CreateFlags.NoRequireDiscord);
+
+            if(discordInstance == null)
+            {
+                _wasCreated?.Invoke(false);
+                return;
+            }
 
             if (DiscordManagerData.Settings.hasSteamID)
             {
@@ -55,42 +106,28 @@ namespace MC.DiscordManager
             {
                 discordInstance.SetLogHook(DiscordManagerData.Settings.minLoggingLevel, DiscordInternalLog);
             }
-        }
 
-        private void Update()
-        {
-            discordInstance.RunCallbacks();
+            IsInitialized = true;
+            _wasCreated?.Invoke(true);
         }
-
-#if UNITY_EDITOR
-        //Removes the activity instance on the discord user.
-        private void OnDisable()
-        {
-            if (DiscordManagerData.Settings.useDebugLogging)
-            {
-                Debug.Log("Deleting Discord Obj");
-            }
-            discordInstance.Dispose();
-        }
-#else
-    private void OnApplicationQuit()
-    {
-        if (DiscordManagerData.Settings.useDebugLogging)
-        {
-            Debug.Log("Deleting Discord Obj");
-        }
-        discordInstance.Dispose();
-    }
-#endif
 
         #region Application
         public string GetCurrentLangaugae()
         {
+            if (!IsInitialized)
+                return "";
             return discordInstance.GetApplicationManager().GetCurrentLocale();
         }
 
         public void GetOAuth2Token(ApplicationManager.GetOAuth2TokenHandler _onComplete)
         {
+            if(!IsInitialized)
+            {
+                OAuth2Token _nullToken = new OAuth2Token();
+                _onComplete?.Invoke(Result.NotRunning, ref _nullToken);
+                return;
+            }
+
             discordInstance.GetApplicationManager().GetOAuth2Token(
                 delegate (Result _result, ref OAuth2Token _token)
                 {

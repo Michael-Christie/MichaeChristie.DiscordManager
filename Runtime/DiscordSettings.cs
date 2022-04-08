@@ -21,6 +21,7 @@ namespace MC.DiscordManager
         public bool hasSteamID;
         public bool useDebugLogging;
         public bool useWebhooks;
+        public bool initializeOnStart;
 
         public Discord.LogLevel minLoggingLevel = Discord.LogLevel.Debug;
     }

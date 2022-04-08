@@ -1012,7 +1012,7 @@ namespace Discord
             if (result != Result.Ok)
             {
                 Dispose();
-                throw new ResultException(result);
+                throw new ResultException(result);  
             }
         }
 

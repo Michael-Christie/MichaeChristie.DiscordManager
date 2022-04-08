@@ -56,8 +56,15 @@ namespace MC.DiscordManager
         /// <returns></returns>
         public string GetUserName()
         {
+            if(!IsInitialized)
+            {
+                return "UserName";
+            }
+
             if (userData.Bot)
+            {
                 return "Bot";
+            }
 
             return userData.Username;
         }
@@ -68,6 +75,9 @@ namespace MC.DiscordManager
         /// <returns></returns>
         public Texture2D GetUsersAvatar()
         {
+            if (!IsInitialized)
+                return null;
+
             if (usersAvatar == null)
             {
                 FetchUsersAvatar();
@@ -81,6 +91,9 @@ namespace MC.DiscordManager
         /// <returns></returns>
         public User GetRawUserData()
         {
+            if (!IsInitialized)
+                return new User();
+
             return userData;
         }
 
@@ -90,6 +103,9 @@ namespace MC.DiscordManager
         /// <returns>Returns none, tier 1 (classic nitro) or tier 2 (nitro)</returns>
         public PremiumType GetUsersPremiumType()
         {
+            if (!IsInitialized)
+                return PremiumType.None;
+
             return discordInstance.GetUserManager().GetCurrentUserPremiumType();
         }
 
@@ -99,6 +115,11 @@ namespace MC.DiscordManager
         /// <returns>Defaults return of House 1</returns>
         public UserFlag GetHouseFlag()
         {
+            if(!IsInitialized)
+            {
+                return 0;
+            }
+
             if (DoesUserHaveHouseFlag(UserFlag.HypeSquadHouse1))
             {
                 return UserFlag.HypeSquadHouse1;
@@ -112,7 +133,7 @@ namespace MC.DiscordManager
                 return UserFlag.HypeSquadHouse3;
             }
 
-            return UserFlag.HypeSquadHouse1;
+            return 0;
         }
 
         /// <summary>
@@ -122,6 +143,9 @@ namespace MC.DiscordManager
         /// <returns>return true if they have that flag</returns>
         public bool DoesUserHaveHouseFlag(UserFlag _flag)
         {
+            if (!IsInitialized)
+                return false;
+
             return discordInstance.GetUserManager().CurrentUserHasFlag(_flag);
         }
 
@@ -132,6 +156,13 @@ namespace MC.DiscordManager
         /// <param name="_onComplete">The callback for when the user is found.</param>
         public void GetAnotherUser(long _userID, GetUser _onComplete)
         {
+            if (!IsInitialized)
+            {
+                User _nullUser = new User();
+                _onComplete?.Invoke(false, ref _nullUser);
+                return;
+            }
+
             discordInstance.GetUserManager().GetUser(_userID,
                 delegate (Result _result, ref User _user)
                 {
@@ -144,6 +175,9 @@ namespace MC.DiscordManager
         /// </summary>
         private void FetchUsersAvatar()
         {
+            if (!IsInitialized)
+                return;
+
             discordInstance.GetImageManager().Fetch(ImageHandle.User(userData.Id, 256),
                 delegate (Result _result, ImageHandle _handle)
                 {
@@ -167,6 +201,12 @@ namespace MC.DiscordManager
 
         public void GetAnotherUsersAvatar(User _user, GetUsersTexture _onComplete)
         {
+            if (!IsInitialized)
+            {
+                _onComplete?.Invoke(false, null);
+                return;
+            }
+
             discordInstance.GetImageManager().Fetch(ImageHandle.User(_user.Id, 256),
                 delegate (Result _result, ImageHandle _handle)
                 {

@@ -80,6 +80,10 @@ namespace MC.DiscordManager
 
             EditorGUILayout.Space();
 
+            _settingTarget.initializeOnStart = EditorGUILayout.Toggle("Initalize On Start", _settingTarget.initializeOnStart);
+
+            EditorGUILayout.Space();
+
             EditorGUILayout.LabelField("Debug Settings", EditorStyles.boldLabel);
 
             _settingTarget.useDebugLogging = EditorGUILayout.Toggle("Debug Logging", _settingTarget.useDebugLogging);
