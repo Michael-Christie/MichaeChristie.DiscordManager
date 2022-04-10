@@ -1,5 +1,6 @@
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace MC.DiscordManager
 {
@@ -11,17 +12,22 @@ namespace MC.DiscordManager
         private int steamApp = 0;
 
         //
+        public override VisualElement CreateInspectorGUI()
+        {
+            return base.CreateInspectorGUI();
+        }
+
         public override void OnInspectorGUI()
         {
+            DiscordSettings _settingTarget = (DiscordSettings)target;
+
             GUIStyle _redText = new GUIStyle(EditorStyles.label);
             _redText.normal.textColor = Color.red;
 
-            //Custom draw the inspector window
-            DiscordSettings _settingTarget = (DiscordSettings)target;
-
             EditorGUILayout.LabelField("Discord Settings", EditorStyles.boldLabel);
 
-            password = EditorGUILayout.PasswordField("Discord App ID", $"{password}");
+
+            password = EditorGUILayout.PasswordField("Discord App ID", _settingTarget.discordAppId == -1 ? "" : _settingTarget.discordAppId.ToString());
 
             if (!string.IsNullOrEmpty(password))
             {
@@ -32,9 +38,14 @@ namespace MC.DiscordManager
                 }
                 else
                 {
-                    _settingTarget.discordAppId = 0;
+                    _settingTarget.discordAppId = -1;
                     GUILayout.Label("THIS IS NOT A VALID LONG TYPE", _redText);
                 }
+            }
+            else
+            {
+                _settingTarget.discordAppId = -1;
+                GUILayout.Label("THIS IS NOT A VALID LONG TYPE", _redText);
             }
 
             _settingTarget.serverInviteCode = EditorGUILayout.TextField("Discord Server Invite Code", _settingTarget.serverInviteCode);
@@ -64,7 +75,7 @@ namespace MC.DiscordManager
 
             if (_settingTarget.hasSteamID)
             {
-                steamApp = EditorGUILayout.IntField("Steam App ID", steamApp);
+                steamApp = EditorGUILayout.IntField("Steam App ID", (int)_settingTarget.steamAppID);
 
                 uint _steamID;
                 if (uint.TryParse(steamApp.ToString(), out _steamID))
@@ -94,6 +105,8 @@ namespace MC.DiscordManager
 
                 EditorGUILayout.LabelField("Do Not Leave This On In A Full Build", _redText);
             }
+
+            serializedObject.ApplyModifiedProperties();
         }
     }
 }

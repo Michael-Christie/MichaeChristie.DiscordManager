@@ -13,10 +13,7 @@ namespace MC.DiscordManager
         /// </summary>
         public void ClearActivity()
         {
-            if (!IsInitialized)
-                return;
-
-            discordInstance.GetActivityManager().ClearActivity(
+            discordInstance?.GetActivityManager().ClearActivity(
                 delegate (Result _result)
                 {
                     if (DiscordManagerData.Settings.useDebugLogging)
@@ -105,12 +102,9 @@ namespace MC.DiscordManager
         /// <param name="_activity">Discords Activity Struct</param>
         public void SetActivity(Activity _activity)
         {
-            if (!IsInitialized)
-                return;
-
             ActivityManager _activityManager = discordInstance.GetActivityManager();
 
-            _activityManager.UpdateActivity(_activity,
+            _activityManager?.UpdateActivity(_activity,
                 delegate (Result _result)
                 {
                     if (DiscordManagerData.Settings.useDebugLogging)

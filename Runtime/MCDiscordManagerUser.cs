@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Discord;
+using UnityEngine.Networking;
+using System.Collections;
 
 namespace MC.DiscordManager
 {
@@ -45,7 +47,14 @@ namespace MC.DiscordManager
         {
             userData = discordInstance.GetUserManager().GetCurrentUser();
 
-            FetchUsersAvatar();
+            GetUsersAvatar(
+                delegate (bool _success, Texture2D _texture)
+                {
+                    if (_success)
+                    {
+                        usersAvatar = _texture;
+                    }
+                });
 
             onUserUpdate?.Invoke();
         }
@@ -73,16 +82,16 @@ namespace MC.DiscordManager
         /// Currently this is broken on discords end 
         /// </summary>
         /// <returns></returns>
-        public Texture2D GetUsersAvatar()
+        public void GetUsersAvatar(GetUsersTexture _onComplete)
         {
-            if (!IsInitialized)
-                return null;
-
             if (usersAvatar == null)
             {
-                FetchUsersAvatar();
+                GetAnotherUsersAvatar(userData, _onComplete);
             }
-            return usersAvatar;
+            else
+            {
+                _onComplete?.Invoke(true, usersAvatar);
+            }
         }
 
         /// <summary>
@@ -91,9 +100,6 @@ namespace MC.DiscordManager
         /// <returns></returns>
         public User GetRawUserData()
         {
-            if (!IsInitialized)
-                return new User();
-
             return userData;
         }
 
@@ -115,11 +121,6 @@ namespace MC.DiscordManager
         /// <returns>Defaults return of House 1</returns>
         public UserFlag GetHouseFlag()
         {
-            if(!IsInitialized)
-            {
-                return 0;
-            }
-
             if (DoesUserHaveHouseFlag(UserFlag.HypeSquadHouse1))
             {
                 return UserFlag.HypeSquadHouse1;
@@ -156,67 +157,41 @@ namespace MC.DiscordManager
         /// <param name="_onComplete">The callback for when the user is found.</param>
         public void GetAnotherUser(long _userID, GetUser _onComplete)
         {
-            if (!IsInitialized)
-            {
-                User _nullUser = new User();
-                _onComplete?.Invoke(false, ref _nullUser);
-                return;
-            }
-
-            discordInstance.GetUserManager().GetUser(_userID,
+            discordInstance?.GetUserManager().GetUser(_userID,
                 delegate (Result _result, ref User _user)
                 {
                     _onComplete?.Invoke(_result == Result.Ok, ref _user);
                 });
         }
 
-        /// <summary>
-        /// Currently this is broken on discords side
-        /// </summary>
-        private void FetchUsersAvatar()
-        {
-            if (!IsInitialized)
-                return;
-
-            discordInstance.GetImageManager().Fetch(ImageHandle.User(userData.Id, 256),
-                delegate (Result _result, ImageHandle _handle)
-                {
-                    if (_result == Result.Ok)
-                    {
-                        usersAvatar = discordInstance.GetImageManager().GetTexture(_handle);
-                        if (imgDiscordUser != null)
-                        {
-                            imgDiscordUser.texture = usersAvatar;
-                        }
-                    }
-                    else
-                    {
-                        if (DiscordManagerData.Settings.useDebugLogging)
-                        {
-                            Debug.LogError(_result);
-                        }
-                    }
-                });
-        }
-
         public void GetAnotherUsersAvatar(User _user, GetUsersTexture _onComplete)
         {
-            if (!IsInitialized)
+            StartCoroutine(IGetUsersAvatar(_user, _onComplete));
+        }
+
+        private IEnumerator IGetUsersAvatar(User _user, GetUsersTexture _onComplete)
+        {
+            string _url = $"https://cdn.discordapp.com/avatars/{_user.Id}/{_user.Avatar}.png?size=256";
+
+            using (UnityWebRequest _request = UnityWebRequest.Get(_url))
             {
-                _onComplete?.Invoke(false, null);
-                return;
-            }
 
-            discordInstance.GetImageManager().Fetch(ImageHandle.User(_user.Id, 256),
-                delegate (Result _result, ImageHandle _handle)
+                yield return _request.SendWebRequest();
+
+                if (!string.IsNullOrEmpty(_request.error))
                 {
-                    if (DiscordManagerData.Settings.useDebugLogging)
-                    {
-                        Debug.LogError(_result);
-                    }
+                    Debug.Log(_request.error);
 
-                    _onComplete?.Invoke(_result == Result.Ok, discordInstance.GetImageManager().GetTexture(_handle));
-                });
+                    _onComplete?.Invoke(false, null);
+                    yield break;
+                }
+
+                Texture2D _texture = new Texture2D(256, 256, TextureFormat.RGBA32, false, true);
+                _texture.LoadImage(_request.downloadHandler.data);
+                _texture.Apply();
+
+                _onComplete?.Invoke(true, _texture);
+            }
         }
         #endregion
     }

@@ -8,7 +8,7 @@ namespace MC.DiscordManager
     {
         [Tooltip("The app ID from Discord Dev page")] public long discordAppId;
 
-        [Tooltip("Steams App ID")] public uint steamAppID;
+        [Tooltip("Steams App ID"), SerializeField] public uint steamAppID; //uInts aren't serializable by default
 
         //These image keys are found by uploading an image to discord art asset section in the developers section
         public string largeImageKey;
@@ -24,5 +24,6 @@ namespace MC.DiscordManager
         public bool initializeOnStart;
 
         public Discord.LogLevel minLoggingLevel = Discord.LogLevel.Debug;
+
     }
 }

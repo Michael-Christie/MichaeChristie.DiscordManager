@@ -16,11 +16,11 @@ namespace MC.DiscordManager
         {
             get
             {
-                return discordInstance.GetVoiceManager().IsSelfMute();
+                return discordInstance?.GetVoiceManager().IsSelfMute() ?? false;
             }
             set
             {
-                discordInstance.GetVoiceManager().SetSelfMute(value);
+                discordInstance?.GetVoiceManager().SetSelfMute(value);
             }
         }
 
@@ -31,11 +31,11 @@ namespace MC.DiscordManager
         {
             get
             {
-                return discordInstance.GetVoiceManager().IsSelfDeaf();
+                return discordInstance?.GetVoiceManager().IsSelfDeaf() ?? false;
             }
             set
             {
-                discordInstance.GetVoiceManager().SetSelfDeaf(value);
+                discordInstance?.GetVoiceManager().SetSelfDeaf(value);
             }
         }
 
@@ -46,10 +46,7 @@ namespace MC.DiscordManager
         /// <returns>The users current voice mode.</returns>
         public InputMode GetVoiceMode()
         {
-            if (!IsInitialized)
-                return new InputMode();
-
-            return discordInstance.GetVoiceManager().GetInputMode();
+            return discordInstance?.GetVoiceManager().GetInputMode() ?? new InputMode();
         }
 
         /// <summary>
@@ -97,13 +94,7 @@ namespace MC.DiscordManager
         /// <param name="_onComplete">Callback on Completed</param>
         public void SetInputMode(InputMode _mode, Action<bool> _onComplete)
         {
-            if (!IsInitialized)
-            {
-                _onComplete?.Invoke(false);
-                return;
-            }
-
-            discordInstance.GetVoiceManager().SetInputMode(_mode,
+            discordInstance?.GetVoiceManager().SetInputMode(_mode,
                 delegate (Result _result)
                 {
                     _onComplete?.Invoke(_result == Result.Ok);
@@ -117,10 +108,7 @@ namespace MC.DiscordManager
         /// <returns>The volume as an int betwen 0-200. With 100 being default</returns>
         public int GetLocalVolume(User _user)
         {
-            if (!IsInitialized)
-                return 0;
-
-            return discordInstance.GetVoiceManager().GetLocalVolume(_user.Id);
+            return discordInstance?.GetVoiceManager().GetLocalVolume(_user.Id) ?? 100;
         }
 
         /// <summary>
@@ -130,12 +118,9 @@ namespace MC.DiscordManager
         /// <param name="_volume">The volume to set to. Is between 0-200 with 100 being default</param>
         public void SetLocalVolume(User _user, int _volume)
         {
-            if (!IsInitialized)
-                return;
-
             _volume = Mathf.Clamp(_volume, 0, 200);
 
-            discordInstance.GetVoiceManager().SetLocalVolume(_user.Id, Convert.ToByte(_volume));
+            discordInstance?.GetVoiceManager().SetLocalVolume(_user.Id, Convert.ToByte(_volume));
         }
 
         /// <summary>
@@ -145,10 +130,7 @@ namespace MC.DiscordManager
         /// <returns>If they are muted</returns>
         public bool GetLocalMute(User _user)
         {
-            if (!IsInitialized)
-                return false;
-
-            return discordInstance.GetVoiceManager().IsLocalMute(_user.Id);
+            return discordInstance?.GetVoiceManager().IsLocalMute(_user.Id) ?? false;
         }
 
         /// <summary>
@@ -158,10 +140,7 @@ namespace MC.DiscordManager
         /// <param name="_isMuted">If they are muted or not</param>
         public void SetLocalMute(User _user, bool _isMuted)
         {
-            if (!IsInitialized)
-                return;
-
-            discordInstance.GetVoiceManager().SetLocalMute(_user.Id, _isMuted);
+            discordInstance?.GetVoiceManager().SetLocalMute(_user.Id, _isMuted);
         }
         #endregion
     }

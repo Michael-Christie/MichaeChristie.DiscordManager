@@ -15,8 +15,6 @@ namespace MC.DiscordManager
 
         private static Discord.Discord discordInstance;
 
-        [SerializeField] private RawImage imgDiscordUser;
-
         private User userData;
 
         private Texture2D usersAvatar;
@@ -114,21 +112,12 @@ namespace MC.DiscordManager
         #region Application
         public string GetCurrentLangaugae()
         {
-            if (!IsInitialized)
-                return "";
-            return discordInstance.GetApplicationManager().GetCurrentLocale();
+            return discordInstance?.GetApplicationManager().GetCurrentLocale() ?? string.Empty;
         }
 
         public void GetOAuth2Token(ApplicationManager.GetOAuth2TokenHandler _onComplete)
         {
-            if(!IsInitialized)
-            {
-                OAuth2Token _nullToken = new OAuth2Token();
-                _onComplete?.Invoke(Result.NotRunning, ref _nullToken);
-                return;
-            }
-
-            discordInstance.GetApplicationManager().GetOAuth2Token(
+            discordInstance?.GetApplicationManager().GetOAuth2Token(
                 delegate (Result _result, ref OAuth2Token _token)
                 {
                     _onComplete?.Invoke(_result, ref _token);
