@@ -25,5 +25,7 @@ namespace MC.DiscordManager
 
         public Discord.LogLevel minLoggingLevel = Discord.LogLevel.Debug;
 
+        public Discord.CreateFlags discordLoadFlag;
+
     }
 }

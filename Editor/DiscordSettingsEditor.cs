@@ -48,7 +48,15 @@ namespace MC.DiscordManager
                 GUILayout.Label("THIS IS NOT A VALID LONG TYPE", _redText);
             }
 
+            _settingTarget.initializeOnStart = EditorGUILayout.Toggle("Initalize On Start", _settingTarget.initializeOnStart);
+
             _settingTarget.serverInviteCode = EditorGUILayout.TextField("Discord Server Invite Code", _settingTarget.serverInviteCode);
+
+            _settingTarget.discordLoadFlag = (Discord.CreateFlags)EditorGUILayout.EnumPopup("Discord Load Flag", _settingTarget.discordLoadFlag);
+            EditorGUI.indentLevel++;
+            EditorGUILayout.LabelField("Default - Will force close the game to load with discord open.");
+            EditorGUILayout.LabelField("Not Required - Doesn't require discord to run.");
+            EditorGUI.indentLevel--;
 
             EditorGUILayout.Space();
 
@@ -91,10 +99,6 @@ namespace MC.DiscordManager
 
             EditorGUILayout.Space();
 
-            _settingTarget.initializeOnStart = EditorGUILayout.Toggle("Initalize On Start", _settingTarget.initializeOnStart);
-
-            EditorGUILayout.Space();
-
             EditorGUILayout.LabelField("Debug Settings", EditorStyles.boldLabel);
 
             _settingTarget.useDebugLogging = EditorGUILayout.Toggle("Debug Logging", _settingTarget.useDebugLogging);
@@ -106,7 +110,10 @@ namespace MC.DiscordManager
                 EditorGUILayout.LabelField("Do Not Leave This On In A Full Build", _redText);
             }
 
-            serializedObject.ApplyModifiedProperties();
+            if (EditorGUI.EndChangeCheck())
+            {
+                serializedObject.ApplyModifiedProperties();
+            }
         }
     }
 }

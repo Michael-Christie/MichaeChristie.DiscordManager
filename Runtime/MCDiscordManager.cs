@@ -85,7 +85,15 @@ namespace MC.DiscordManager
 
         public void Create(Action<bool> _wasCreated)
         {
-            discordInstance = new Discord.Discord(DiscordManagerData.Settings.discordAppId, (UInt64)CreateFlags.NoRequireDiscord);
+            //Sometimes the sdk will call an exception error from inside, so this will keep the game running if that happens.
+            try
+            {
+                discordInstance = new Discord.Discord(DiscordManagerData.Settings.discordAppId, (UInt64)DiscordManagerData.Settings.discordLoadFlag);
+            }
+            catch
+            {
+                _wasCreated?.Invoke(false);
+            }
 
             if(discordInstance == null)
             {
@@ -109,7 +117,7 @@ namespace MC.DiscordManager
             _wasCreated?.Invoke(true);
         }
 
-        #region Application
+#region Application
         public string GetCurrentLangaugae()
         {
             return discordInstance?.GetApplicationManager().GetCurrentLocale() ?? string.Empty;
@@ -123,9 +131,9 @@ namespace MC.DiscordManager
                     _onComplete?.Invoke(_result, ref _token);
                 });
         }
-        #endregion
+#endregion
 
-        #region Utility
+#region Utility
         private void DiscordInternalLog(LogLevel _level, string _message)
         {
             if (_level == LogLevel.Debug || _level == LogLevel.Info)
@@ -141,6 +149,6 @@ namespace MC.DiscordManager
                 Debug.LogError($"Discord - {_message}");
             }
         }
-        #endregion
+#endregion
     }
 }
