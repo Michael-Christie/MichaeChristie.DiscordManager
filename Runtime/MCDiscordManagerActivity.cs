@@ -56,6 +56,8 @@ namespace MC.DiscordManager
                     SmallText = DiscordManagerData.Settings.smallImageText
                 },
             };
+
+            SetActivity(_activity);
         }
 
         /// <summary>
