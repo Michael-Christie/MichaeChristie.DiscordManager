@@ -12,11 +12,6 @@ namespace MC.DiscordManager
         private int steamApp = 0;
 
         //
-        public override VisualElement CreateInspectorGUI()
-        {
-            return base.CreateInspectorGUI();
-        }
-
         public override void OnInspectorGUI()
         {
             DiscordSettings _settingTarget = (DiscordSettings)target;
@@ -114,6 +109,7 @@ namespace MC.DiscordManager
             if (EditorGUI.EndChangeCheck())
             {
                 serializedObject.ApplyModifiedProperties();
+                EditorUtility.SetDirty(_settingTarget);
             }
         }
     }
