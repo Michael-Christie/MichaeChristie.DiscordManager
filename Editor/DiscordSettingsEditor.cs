@@ -26,6 +26,7 @@ namespace MC.DiscordManager
 
             EditorGUILayout.LabelField("Discord Settings", EditorStyles.boldLabel);
 
+            EditorGUI.BeginChangeCheck();
 
             password = EditorGUILayout.PasswordField("Discord App ID", _settingTarget.discordAppId == -1 ? "" : _settingTarget.discordAppId.ToString());
 
