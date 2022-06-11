@@ -2,6 +2,8 @@
 
 Last Updated: June 11, 2022 12:27 PM
 
+To install ``https://github.com/Michael-Christie/unity.michaelchristie.discordmanager.git#1.0.5`` in the unity package manager.
+
 # Prerequisite
 
 Once you’ve downloading this package into your unity project, you will need to set up a Scriptable Object that holds all the data needed for the Discord Manager. Under Discord Manager > Create Asset Menu. This will need to create a Settings Scriptable Object  in Resources > DiscordManager for you to edit.
